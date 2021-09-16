@@ -26,6 +26,20 @@ namespace Api.Web.Controllers
 
             _listaDeAlunos.Add(novoAluno);
 
+            return Ok(new { mensagem = "Aluno cadastrado com sucesso!" });
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult Alterar(int id, [FromBody] Aluno aluno)
+        {
+            var dadosDoAluno = _listaDeAlunos.FirstOrDefault(x => x.Id == id);
+
+            dadosDoAluno.Nome = aluno.Nome;
+            dadosDoAluno.Idade = aluno.Idade;
+            dadosDoAluno.Telefone = aluno.Telefone;
+
+            _listaDeAlunos.Add(dadosDoAluno);
+
             return Ok();
         }
 
@@ -36,11 +50,24 @@ namespace Api.Web.Controllers
         }
 
         [HttpGet("{id}")]
-        public Aluno Buscar(int id)
+        public IActionResult Buscar(int id)
         {
             var aluno = _listaDeAlunos.FirstOrDefault(x => x.Id == id);
+            if (aluno is not null)
+            {
+                return Ok(aluno);
+            }
 
-            return aluno;
+            return NotFound(new { mensagem = "Aluno não encontrado"});
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult Excluir(int id)
+        {
+            var aluno = _listaDeAlunos.FirstOrDefault(x => x.Id == id);
+            _listaDeAlunos.Remove(aluno);
+
+            return Ok();
         }
     }
 }
